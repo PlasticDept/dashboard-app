@@ -6,9 +6,6 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Mulai session timeout
-  startSessionTimeout();
-
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("isLoggedIn");
     window.location.href = "login.html";
@@ -19,7 +16,9 @@ window.addEventListener("DOMContentLoaded", () => {
   fetch(API_URL)
     .then((response) => response.json())
     .then((rows) => {
-      const sortedRows = sortByOvertimeHours(rows);
+      detailMap = groupDetailByName(rows);
+      const summarized = summarizeOvertimeData(rows);
+      const sortedRows = sortByOvertimeHours(summarized);
       renderTable(sortedRows);
       renderChart(sortedRows);
     })
@@ -30,25 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Fungsi session timeout
-function startSessionTimeout() {
-  let timeout;
-
-  function resetTimer() {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      alert("Sesi kamu telah habis. Silakan login kembali.");
-      localStorage.removeItem("isLoggedIn"); // Bersihkan status login
-      window.location.href = "login.html";
-    }, 5 * 60 * 1000); // 5 menit
-  }
-
-  ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
-    document.addEventListener(evt, resetTimer);
-  });
-
-  resetTimer();
-}
+let detailMap = {};
 
 function parseOvertime(value) {
   if (!value) return 0;
@@ -64,6 +45,50 @@ function sortByOvertimeHours(rows) {
   });
 }
 
+function summarizeOvertimeData(rows) {
+  const summaryMap = {};
+
+  rows.forEach(row => {
+    const name = (row["Name"] || row["Nama"] || row["Employee"] || "").trim();
+    const hours = parseOvertime(row["Tull"] || row["Overtime Hours"]);
+
+    if (!name) return;
+
+    if (!summaryMap[name]) {
+      summaryMap[name] = {
+        Employee: name,
+        Department: row["Department"] || "-",
+        Shift: row["Shift"] || "-",
+        "Overtime Hours": 0
+      };
+    }
+
+    summaryMap[name]["Overtime Hours"] += hours;
+  });
+
+  return Object.values(summaryMap);
+}
+
+function groupDetailByName(rows) {
+  const detailMap = {};
+
+  rows.forEach(row => {
+    const name = (row["Name"] || row["Nama"] || row["Employee"] || "").trim();
+    const date = row["Date"];
+    const hours = parseOvertime(row["Tull"]);
+
+    if (!name || !date || isNaN(hours)) return;
+
+    if (!detailMap[name]) {
+      detailMap[name] = [];
+    }
+
+    detailMap[name].push({ date, hours });
+  });
+
+  return detailMap;
+}
+
 function renderTable(rows) {
   const tableBody = document.querySelector("#kpiTable tbody");
   tableBody.innerHTML = "";
@@ -71,17 +96,27 @@ function renderTable(rows) {
   rows.forEach((row, index) => {
     const tr = document.createElement("tr");
 
+    const name = row["Employee"] || row["Nama"] || "-";
+
     const columns = [
       index + 1,
-      row["Employee"] || row["Nama"] || "-",
+      name,
       row["Department"] || "-",
       parseOvertime(row["Overtime Hours"]),
       row["Shift"] || "-"
     ];
 
-    columns.forEach((value) => {
+    columns.forEach((value, i) => {
       const td = document.createElement("td");
       td.textContent = value;
+
+      // Aktifkan klik hanya di kolom nama
+      if (i === 1) {
+        td.style.cursor = "pointer";
+        td.style.color = "#007BFF";
+        td.addEventListener("click", () => toggleDetailRow(name, tr));
+      }
+
       tr.appendChild(td);
     });
 
@@ -90,6 +125,65 @@ function renderTable(rows) {
 
   document.getElementById("kpiTable").style.display = "table";
 }
+
+function toggleDetailRow(name, parentRow) {
+  const existingDetail = parentRow.nextSibling;
+  if (existingDetail && existingDetail.classList.contains("detail-row")) {
+    existingDetail.classList.remove("show");
+    setTimeout(() => {
+      existingDetail.remove();
+    }, 300);
+    return;
+  }
+
+  // Tutup semua detail lainnya
+  document.querySelectorAll(".detail-row").forEach(row => row.remove());
+
+  const details = detailMap[name] || [];
+
+  const detailTr = document.createElement("tr");
+  detailTr.classList.add("detail-row");
+  const detailTd = document.createElement("td");
+  detailTd.colSpan = 5;
+
+  if (details.length > 0) {
+    let tableHTML = `
+      <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+        <thead>
+          <tr style="background-color: #f2f2f2;">
+            <th style="text-align: left; padding: 6px;">Tanggal</th>
+            <th style="text-align: left; padding: 6px;">Tull (jam)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${details.map(d => {
+            const tgl = new Date(d.date).toLocaleDateString("id-ID", {
+              year: "numeric",
+              month: "long",
+              day: "numeric"
+            });
+            return `
+              <tr>
+                <td style="padding: 6px;">${tgl}</td>
+                <td style="padding: 6px;">${d.hours}</td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+    detailTd.innerHTML = `<strong>Detail Lembur:</strong>` + tableHTML;
+  } else {
+    detailTd.innerHTML = `<em>Tidak ada data lembur</em>`;
+  }
+
+  detailTr.appendChild(detailTd);
+  parentRow.after(detailTr);
+  setTimeout(() => {
+    detailTr.classList.add("show");
+  }, 10);
+}
+
 
 function renderChart(rows) {
   const labels = rows.map(row => row["Employee"] || row["Nama"] || "-");
