@@ -19,25 +19,26 @@ body {
 
 .header-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* ubah dari space-between ke center */
   align-items: center;
   max-width: 1100px;
   margin: 0 auto;
+  position: relative; /* untuk posisi tombol logout */
 }
 
 /* Posisi tombol logout di pojok kanan atas */
 #logoutBtn {
   position: absolute;
-  top: 5px; /* Jarak dari atas */
-  right: 5px; /* Jarak dari kanan */
+  top: 5px;
+  right: 5px;
   padding: 0.5rem 1.2rem;
-  background-color: #e74c3c; /* Warna tombol logout */
+  background-color: #e74c3c;
   color: white;
   border: none;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 10; /* Pastikan tombol logout berada di atas */
+  z-index: 10;
 }
 
 .team-indicators {
@@ -62,11 +63,10 @@ body {
 }
 
 .indicator-text {
-  font-size: 20px;  /* Membuat teks lebih besar */
+  font-size: 20px;
   font-weight: bold;
 }
 
-/* Tombol Upload CSV */
 .btn-upload {
   padding: 0.5rem 1.2rem;
   background-color: #28a745;
@@ -85,8 +85,6 @@ body {
     padding: 0 2rem;
 }
 
-
-/* Konten utama */
 .main-content {
   padding: 2rem;
   max-width: 1100px;
@@ -122,28 +120,27 @@ body {
   text-align: left;
 }
 
-/* Atur lebar kolom */
 .styled-table th:nth-child(1), .styled-table td:nth-child(1) {
-  width: 10%; /* Kolom No */
+  width: 10%;
 }
 
 .styled-table th:nth-child(2), .styled-table td:nth-child(2) {
-  width: 30%; /* Kolom Employee */
-  text-align: left; /* Rata kiri untuk isi data kolom Employee */
+  width: 30%;
+  text-align: left;
 }
 
 .styled-table th:nth-child(3), .styled-table td:nth-child(3) {
-  width: 25%; /* Kolom Department */
-  text-align: center; /* Center untuk isi data kolom Employee */
+  width: 25%;
+  text-align: center;
 }
 
 .styled-table th:nth-child(4), .styled-table td:nth-child(4) {
-  width: 20%; /* Kolom Overtime Hours */
+  width: 20%;
 }
 
 .styled-table th:nth-child(5), .styled-table td:nth-child(5) {
-  width: 15%; /* Kolom Shift */
-  text-align: left; /* Center untuk isi data kolom Employee */
+  width: 15%;
+  text-align: left;
 }
 
 .chart-wrapper {
