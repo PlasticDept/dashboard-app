@@ -1,13 +1,30 @@
+// Cek dan handle session timeout sebelum render dashboard
 window.addEventListener("DOMContentLoaded", () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const lastActive = localStorage.getItem("lastActive");
+  const now = Date.now();
 
   if (!isLoggedIn) {
     window.location.href = "login.html";
     return;
   }
 
+  // Jika tidak aktif lebih dari 5 menit (300.000 ms), logout otomatis
+  if (lastActive && now - parseInt(lastActive) > 5 * 60 * 1000) {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("lastActive");
+    window.location.href = "login.html";
+    return;
+  }
+
+  // Perbarui waktu aktif setiap interaksi
+  document.addEventListener("mousemove", () => localStorage.setItem("lastActive", Date.now()));
+  document.addEventListener("keydown", () => localStorage.setItem("lastActive", Date.now()));
+  localStorage.setItem("lastActive", Date.now());
+
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("lastActive");
     window.location.href = "login.html";
   });
 
@@ -28,6 +45,11 @@ window.addEventListener("DOMContentLoaded", () => {
       console.error(err);
     });
 });
+
+// ...kode lainnya tetap seperti sebelumnya
+
+// (seluruh isi skrip kamu sebelumnya tetap, tidak perlu diubah lagi)
+
 
 let detailMap = {};
 
