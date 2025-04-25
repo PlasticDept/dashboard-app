@@ -76,6 +76,7 @@ function groupDetailByName(rows) {
     const name = (row["Name"] || row["Nama"] || row["Employee"] || "").trim();
     const date = row["Date"];
     const hours = parseOvertime(row["Tull"]);
+    const typeOT = row["Type OT"] || "-";
 
     if (!name || !date || isNaN(hours)) return;
 
@@ -83,11 +84,12 @@ function groupDetailByName(rows) {
       detailMap[name] = [];
     }
 
-    detailMap[name].push({ date, hours });
+    detailMap[name].push({ date, hours, typeOT });
   });
 
   return detailMap;
 }
+
 
 function renderTable(rows) {
   const tableBody = document.querySelector("#kpiTable tbody");
@@ -148,30 +150,33 @@ function toggleDetailRow(name, parentRow) {
 
   if (details.length > 0) {
     let tableHTML = `
-      <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
-        <thead>
-          <tr style="background-color: #f2f2f2;">
-            <th style="text-align: left; padding: 6px;">Date</th>
-            <th style="text-align: left; padding: 6px;">Tull</th>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+    <thead>
+      <tr style="background-color: #f2f2f2;">
+        <th style="text-align: left; padding: 6px;">Date</th>
+        <th style="text-align: left; padding: 6px;">Type OT</th>
+        <th style="text-align: left; padding: 6px;">Tull</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${details.map(d => {
+        const tgl = new Date(d.date).toLocaleDateString("id-ID", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        });
+        return `
+          <tr>
+            <td style="padding: 6px;">${tgl}</td>
+            <td style="padding: 6px;">${d.typeOT}</td>
+            <td style="padding: 6px;">${d.hours}</td>
           </tr>
-        </thead>
-        <tbody>
-          ${details.map(d => {
-            const tgl = new Date(d.date).toLocaleDateString("id-ID", {
-              year: "numeric",
-              month: "long",
-              day: "numeric"
-            });
-            return `
-              <tr>
-                <td style="padding: 6px;">${tgl}</td>
-                <td style="padding: 6px;">${d.hours}</td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
-    `;
+        `;
+      }).join("")}
+    </tbody>
+  </table>
+`;
+
     detailTd.innerHTML = `<strong>Overtime Detail:</strong>` + tableHTML;
   } else {
     detailTd.innerHTML = `<em>Tidak ada data lembur</em>`;
