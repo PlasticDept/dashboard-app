@@ -150,7 +150,7 @@ function toggleDetailRow(name, parentRow) {
 
   if (details.length > 0) {
     let tableHTML = `
-  <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+  <table style="width: 60%; border-collapse: collapse; margin-top: 5px;">
     <thead>
       <tr style="background-color: #f2f2f2;">
        <th style="width: 30%; text-align: left; padding: 6px;">Date</th>
