@@ -153,9 +153,9 @@ function toggleDetailRow(name, parentRow) {
   <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
     <thead>
       <tr style="background-color: #f2f2f2;">
-        <th style="text-align: left; padding: 6px;">Date</th>
-        <th style="text-align: left; padding: 6px;">Type OT</th>
-        <th style="text-align: left; padding: 6px;">Tull</th>
+       <th style="width: 30%; text-align: left; padding: 6px;">Date</th>
+       <th style="width: 40%; text-align: center; padding: 6px;">Type OT</th>
+       <th style="width: 30%; text-align: right; padding: 6px;">Tull</th>
       </tr>
     </thead>
     <tbody>
@@ -167,9 +167,9 @@ function toggleDetailRow(name, parentRow) {
         });
         return `
           <tr>
-            <td style="padding: 6px;">${tgl}</td>
-            <td style="padding: 6px;">${d.typeOT}</td>
-            <td style="padding: 6px;">${d.hours}</td>
+           <td style="text-align: left; padding: 6px;">${tgl}</td>
+           <td style="text-align: center; padding: 6px;">${d.typeOT}</td>
+           <td style="text-align: right; padding: 6px;">${d.hours}</td>
           </tr>
         `;
       }).join("")}
