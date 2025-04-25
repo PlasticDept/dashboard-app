@@ -9,6 +9,10 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
   if (username === "LC3A" && password === "1234") {
     // Simpan status login ke localStorage
     localStorage.setItem("isLoggedIn", "true");
+
+    // 🆕 Simpan waktu login agar bisa dicek untuk session timeout
+    localStorage.setItem("lastActive", Date.now());
+
     window.location.href = "dashboard.html";
   } else {
     message.textContent = "Invalid username or password.";
