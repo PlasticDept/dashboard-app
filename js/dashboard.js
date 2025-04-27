@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
     window.location.href = "login.html";
   });
 
-  const API_URL = "https://script.google.com/macros/s/AKfycbyBgl31mcitrNBg29ZXfr0fnTucP7qPfoIhdPVxSx-fY7cLoRNPOgJCujBeS71Cq-g/exec?mode=data";
+  const API_URL = "https://script.google.com/macros/s/AKfycbzm_MB53Fjmtp0ff1FO7DY3T84nQ59McuVUq53RlDy-xJ7tbp3cB6AQ2qR7TyDjO_v9/exec?mode=data";
 
   fetch(API_URL)
     .then((response) => response.json())
