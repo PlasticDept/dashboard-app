@@ -52,6 +52,7 @@ body {
   align-items: center;
   gap: 2rem;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .indicator-item {
