@@ -29,7 +29,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // Fetch data CSV dari GitHub
-  const GITHUB_CSV_URL = "https://raw.githubusercontent.com/aldiansyah9395/kpi-overtime-app/main/data/data-ot.csv";
+  const GITHUB_CSV_URL = "https://raw.githubusercontent.com/PlasticDept/dashboard-app/main/data/data-ot.csv";
 
   fetch(GITHUB_CSV_URL)
     .then(response => {
