@@ -6,7 +6,7 @@
   <title>Plastic Dept</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Link ke file CSS eksternal -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" type="image/png" href="favicon_circle.png">
 </head>
@@ -18,7 +18,7 @@
     </div>
   </header>
 
-  <!-- Indikator Tim (Non Shift, Green Team, Blue Team) -->
+  <!-- Indikator Tim -->
   <div class="team-indicators">
     <div class="indicator-item">
       <span class="indicator-circle" style="background-color: #f39c12;"></span>
@@ -34,18 +34,26 @@
     </div>
   </div>
 
-  <!-- Tombol Upload CSV -->
-  <!--<div style="text-align: right; margin-bottom: 1rem;">
-    <a href="https://script.google.com/macros/s/AKfycbw7v-ymWeKXoK2gMrVNEA0fw9TRjj7sOlcX2--SCYsgufAUN4wPxYN_StAP8H2878aR/exec" target="_blank">
-      <button class="btn-upload">
-        Upload Data OT
-      </button>
-    </a>
-</div>
+  <!-- Upload CSV Section -->
+  <div class="upload-box">
+    <label for="csvFileInput" class="upload-label">Pilih file data:</label>
+  
+    <!-- Label custom tombol -->
+    <label for="csvFileInput" class="custom-file-btn">Choose File</label>
+    <input type="file" id="csvFileInput" accept=".csv" style="display: none;" />
+    
+    <!-- Tempat tampilkan nama file -->
+    <span id="fileNameDisplay" class="file-name-display"></span>
+  
+    <button id="uploadCsvBtn" class="btn-upload">Upload Data OT</button>
+    <div id="uploadStatus" class="upload-status"></div>
+  </div>
+  
+
 
   <main class="main-content">
     <div id="dashboardContent">
-      <p class="loading">Loading data...</p>-->
+      <p class="loading">Loading data...</p>
 
       <div class="table-wrapper">
         <table id="kpiTable" class="styled-table" style="display: none;">
@@ -63,8 +71,8 @@
       </div>
 
       <div class="chart-wrapper">
-        <canvas id="overtimeChart" width="600" height="300"></canvas>
-      </div>
+        <canvas id="overtimeChart"></canvas>
+      </div>      
     </div>
   </main>
 
