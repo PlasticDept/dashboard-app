@@ -51,6 +51,8 @@ window.addEventListener("DOMContentLoaded", () => {
     const sortedRows = sortByOvertimeHours(summarized);
     renderTable(sortedRows);
     renderChart(sortedRows);
+    renderPieChart(sortedRows);
+
 
     const loadingEl = document.querySelector("#dashboardContent .loading");
     if (loadingEl) loadingEl.remove();
@@ -326,5 +328,61 @@ function renderChart(rows) {
         y: { title: { display: true, text: "Overtime Hours" }, beginAtZero: true }
       }
     }
+  });
+}
+
+// --- Pie Chart: Persentase total Tull per Shift ---
+function renderPieChart(rows) {
+  const shiftTotals = {
+    "Green Team": 0,
+    "Blue Team": 0,
+    "Non Shift": 0
+  };
+
+  rows.forEach(row => {
+    const shift = (row["Shift"] || "").trim();
+    const hours = parseOvertime(row["Tull"] || row["Overtime Hours"]);
+
+    if (shift.includes("Green")) shiftTotals["Green Team"] += hours;
+    else if (shift.includes("Blue")) shiftTotals["Blue Team"] += hours;
+    else shiftTotals["Non Shift"] += hours;
+  });
+
+  const labels = Object.keys(shiftTotals);
+  const data = Object.values(shiftTotals);
+  const total = data.reduce((a, b) => a + b, 0);
+  const colors = ["#4CAF50", "#2196F3", "#FF9800"];
+
+  const ctx = document.getElementById("pieChart").getContext("2d");
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: colors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        },
+        datalabels: {
+          color: "#fff",
+          font: {
+            weight: 'bold',
+            size: 14
+          },
+          formatter: (value, context) => {
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `${percentage}%`;
+          }
+        }
+      }
+    },
+    plugins: [ChartDataLabels] // ✅ ← ini WAJIB ditambahkan
   });
 }
